@@ -11,26 +11,111 @@ G2 中 **Axis（坐标轴）** 就像是图表的 "尺子"，用于建立数据�
 
 > 举个例子：在柱状图中，横轴通常表示时间，纵轴表示销售额，这样你就能一眼看出 "3 月卖了 200 万，4 月涨到 300 万"
 
-![简单的坐标轴使用示例](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*H3NJR5pcMVsAAAAAAAAAAAAAemJ7AQ/original)
+![坐标轴使用方式示意图](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*gv2RSJ6zZykAAAAAAAAAAAAAemJ7AQ/original)
 
 ### 构成元素
 
 ![构成元素](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*DnhUSZbue48AAAAAAAAAAAAAemJ7AQ/original)
 
-## 配置方式
+### 使用方式
+
+通过前面的概述内容，相信你对坐标轴已经有了一个清晰的认识。那么具体该如何使用呢？接下来，我将手把手教你如何配置坐标轴。
+
+配置坐标轴其实就像搭积木，只需记住一个简单的核心口诀："用 axis 属性，按方向配置，哪里需要改哪里改。"
+
+**第一步：启用坐标轴（默认已开启）**
+
+G2 会根据你的数据类型 自动生成坐标轴，不需要任何配置就能看到基础坐标轴
+
+![启用坐标轴（默认已开启）](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*YQM_TpyimSIAAAAAAAAAAAAAemJ7AQ/original)
+
+```ts
+chart.options({
+  type: 'interval',
+  width: 500,
+  height: 300,
+  data: [
+    { id: 1, 月份: '三月', 销售额: 200 },
+    { id: 3, 月份: '四月', 销售额: 300 },
+    { id: 4, 月份: '五月', 销售额: 400 },
+    { id: 5, 月份: '六月', 销售额: 500 },
+    { id: 6, 月份: '七月', 销售额: 600 },
+    { id: 7, 月份: '八月', 销售额: 700 },
+  ],
+  encode: { x: '月份', y: '销售额', color: '月份' },
+  // 不需要 axis 配置也能自动生成坐标轴
+  // axis: {},
+});
+```
+
+**第二步：按方向单独配置**
+
+> 配置 x（水平方向） 坐标轴
+
+```ts
+chart.options({
+  type: 'interval',
+  width: 500,
+  height: 300,
+  data: [
+    { id: 1, 月份: '三月', 销售额: 200 },
+    { id: 3, 月份: '四月', 销售额: 300 },
+    { id: 4, 月份: '五月', 销售额: 400 },
+    { id: 5, 月份: '六月', 销售额: 500 },
+    { id: 6, 月份: '七月', 销售额: 600 },
+    { id: 7, 月份: '八月', 销售额: 700 },
+  ],
+  encode: { x: '月份', y: '销售额', color: '月份' },
+  // 配置 axis（坐标轴）
+  axis: {
+    // 配置水平方向的坐标轴属性
+    x: {
+      // 配置参数以及示例可以继续往下看..
+    },
+  },
+});
+```
+
+> 配置 y（垂直方向） 坐标轴
+
+```ts
+chart.options({
+  type: 'interval',
+  width: 500,
+  height: 300,
+  data: [
+    { id: 1, 月份: '三月', 销售额: 200 },
+    { id: 3, 月份: '四月', 销售额: 300 },
+    { id: 4, 月份: '五月', 销售额: 400 },
+    { id: 5, 月份: '六月', 销售额: 500 },
+    { id: 6, 月份: '七月', 销售额: 600 },
+    { id: 7, 月份: '八月', 销售额: 700 },
+  ],
+  encode: { x: '月份', y: '销售额', color: '月份' },
+  // 配置 axis（坐标轴）
+  axis: {
+    // 配置垂直方向的坐标轴属性
+    y: {
+      // 配置参数以及示例可以继续往下看..
+    },
+  },
+});
+```
+
+### 配置层级
 
 坐标轴可以在 Mark 层级配置。在 G2 中每个标记（Mark）都有自己的坐标轴。如果标记对应比例尺是同步的，那么坐标轴也会合并。
 
-```js
+```ts
 // Functional API
-// 第一种方式
+// 第一种方式（不推荐）
 chart
   .interval()
   .axis('x', { labelFormatter: '%0' })
   .axis('y', { tickCount: 5 });
 
 // Spec API
-// 第二种方式
+// 第二种方式（推荐）
 ({
   type: 'interval',
   axis: {
@@ -42,13 +127,13 @@ chart
 
 坐标轴也可以在 View 层级配置。坐标轴具有传递性。视图上声明的坐标轴会传递给 `children` 声明的标记，如果该标记有对应通道的坐标轴，就合并；否则不影响。
 
-```js
+```ts
 // Functional API
-// 第一种方式
+// 第一种方式（不推荐）
 chart.axis('x', { labelFormatter: '%0' }).axis('y', { tickCount: 5 });
 
 // Spec API
-// 第二种方式
+// 第二种方式（推荐）
 ({
   type: 'view',
   axis: {
@@ -58,20 +143,33 @@ chart.axis('x', { labelFormatter: '%0' }).axis('y', { tickCount: 5 });
 });
 ```
 
-## 隐藏坐标轴
+### 隐藏坐标轴
 
 隐藏每个通道的坐标轴：
 
-```js
+![坐标轴隐藏演示](https://mdn.alipayobjects.com/huamei_qa8qxu/afts/img/A*Z2JsTKPQxUMAAAAAAAAAAAAAemJ7AQ/original)
+
+> 隐藏 x 坐标轴：
+
+```ts
 ({
   type: 'interval',
-  axis: { y: false }, // 隐藏 y 方向坐标轴
+  axis: { x: false }, // 隐藏 x 水平方向坐标轴
 });
 ```
 
-隐藏多个坐标轴：
+> 隐藏 y 坐标轴：
 
-```js
+```ts
+({
+  type: 'interval',
+  axis: { y: false }, // 隐藏 y 垂直方向坐标轴
+});
+```
+
+> 隐藏多个坐标轴
+
+```ts
 ({
   type: 'interval',
   axis: false,
